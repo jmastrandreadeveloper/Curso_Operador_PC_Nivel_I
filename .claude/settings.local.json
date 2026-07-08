@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node --version && npm --version)",
+      "Bash(cd \"C:\\\\Users\\\\w10-21h2\\\\Documents\\\\GitHub\\\\Curso_Operador_PC_Nivel_I\" && npm install)",
+      "Bash(cd \"C:\\\\Users\\\\w10-21h2\\\\Documents\\\\GitHub\\\\Curso_Operador_PC_Nivel_I\" && npm run dev)",
+      "Bash(gh auth:*)"
+    ]
+  }
+}
