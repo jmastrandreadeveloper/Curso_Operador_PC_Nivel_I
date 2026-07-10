@@ -27,7 +27,7 @@ const server = createServer((req, res) => {
   // API: lista de PDFs disponibles
   if (pathname === '/api/classes') {
     const result = {}
-    for (const tipo of ['Práctica', 'Teoría']) {
+    for (const tipo of ['Práctica', 'Diapositivas', 'Apuntes']) {
       const dir = path.join(PDFS_DIR, tipo)
       if (existsSync(dir)) {
         result[tipo] = readdirSync(dir)

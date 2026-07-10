@@ -33,7 +33,7 @@ export default defineConfig({
         // API endpoint: returns list of available PDFs per class and type
         server.middlewares.use('/api/classes', (req, res) => {
           const result = {}
-          const types = ['Práctica', 'Teoría']
+          const types = ['Práctica', 'Diapositivas', 'Apuntes']
           for (const tipo of types) {
             const dir = path.join(PDFS_DIR, tipo)
             if (existsSync(dir)) {

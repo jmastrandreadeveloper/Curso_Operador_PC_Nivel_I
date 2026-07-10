@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './NavTree.css'
 
-const TIPOS = ['Teoría', 'Práctica']
+const TIPOS = ['Diapositivas', 'Práctica', 'Apuntes']
 
 export default function NavTree({ totalClasses, availablePdfs, selected, onSelect }) {
   const [openClasses, setOpenClasses] = useState(new Set())
@@ -60,7 +60,7 @@ export default function NavTree({ totalClasses, availablePdfs, selected, onSelec
                           title={!available ? 'PDF no disponible' : `Ver ${tipo}`}
                         >
                           <span className="nav-tipo-icon">
-                            {tipo === 'Teoría' ? '📖' : '🔧'}
+                            {tipo === 'Diapositivas' ? '📖' : tipo === 'Práctica' ? '🔧' : '📝'}
                           </span>
                           {tipo}
                           {!available && <span className="nav-unavailable-badge">—</span>}
