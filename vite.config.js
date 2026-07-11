@@ -13,13 +13,15 @@ export default defineConfig({
     {
       name: 'pdf-server',
       configureServer(server) {
-        // Serve PDF files at /pdfs/*
+        // Serve PDF and media files at /pdfs/*
         server.middlewares.use('/pdfs', (req, res, next) => {
           try {
             const decodedPath = decodeURIComponent(req.url)
             const filePath = path.join(PDFS_DIR, decodedPath)
             if (existsSync(filePath) && statSync(filePath).isFile()) {
-              res.setHeader('Content-Type', 'application/pdf')
+              const ext = path.extname(filePath).toLowerCase()
+              const contentType = ext === '.mp4' ? 'video/mp4' : 'application/pdf'
+              res.setHeader('Content-Type', contentType)
               res.setHeader('Cache-Control', 'no-cache')
               createReadStream(filePath).pipe(res)
             } else {
@@ -46,6 +48,10 @@ export default defineConfig({
               result[tipo] = []
             }
           }
+          const historiaDir = path.join(PDFS_DIR, 'Historia')
+          result['Historia'] = existsSync(historiaDir)
+            ? readdirSync(historiaDir).filter(f => f.endsWith('.pdf') || f.endsWith('.mp4'))
+            : []
           res.setHeader('Content-Type', 'application/json')
           res.end(JSON.stringify(result))
         })

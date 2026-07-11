@@ -112,3 +112,24 @@
   font-size: 0.75rem;
   color: #45475a;
 }
+
+/* Historia subfolder */
+.nav-subfolder-btn {
+  color: #cba6f7;
+}
+
+.nav-subfolder-btn:hover {
+  color: #d5c4f7;
+}
+
+.nav-sub-list--nested {
+  border-top: none;
+}
+
+.nav-sub-list--nested .nav-tipo-btn {
+  padding-left: 52px;
+}
+
+.nav-sub-list--nested .nav-tipo-btn.selected {
+  padding-left: 49px;
+}

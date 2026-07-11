@@ -14,6 +14,7 @@ const MIME = {
   '.js':   'application/javascript',
   '.css':  'text/css',
   '.pdf':  'application/pdf',
+  '.mp4':  'video/mp4',
   '.json': 'application/json',
   '.png':  'image/png',
   '.ico':  'image/x-icon',
@@ -38,22 +39,28 @@ const server = createServer((req, res) => {
         result[tipo] = []
       }
     }
+    const historiaDir = path.join(PDFS_DIR, 'Historia')
+    result['Historia'] = existsSync(historiaDir)
+      ? readdirSync(historiaDir).filter(f => f.endsWith('.pdf') || f.endsWith('.mp4'))
+      : []
     res.writeHead(200, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify(result))
     return
   }
 
-  // Servir PDFs
+  // Servir PDFs y media
   if (pathname.startsWith('/pdfs/')) {
     const rel = pathname.slice(6)
     const filePath = path.join(PDFS_DIR, rel)
     if (existsSync(filePath) && statSync(filePath).isFile()) {
-      res.writeHead(200, { 'Content-Type': 'application/pdf' })
+      const ext = path.extname(filePath).toLowerCase()
+      const contentType = MIME[ext] || 'application/octet-stream'
+      res.writeHead(200, { 'Content-Type': contentType })
       createReadStream(filePath).pipe(res)
       return
     }
     res.writeHead(404)
-    res.end('PDF no encontrado')
+    res.end('Archivo no encontrado')
     return
   }
 

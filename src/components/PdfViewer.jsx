@@ -10,6 +10,17 @@ export default function PdfViewer({ url }) {
     )
   }
 
+  if (url.endsWith('.mp4')) {
+    return (
+      <video
+        key={url}
+        className="pdf-iframe"
+        src={url}
+        controls
+      />
+    )
+  }
+
   return (
     <iframe
       key={url}
