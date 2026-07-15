@@ -4,7 +4,11 @@
       "Bash(node --version && npm --version)",
       "Bash(cd \"C:\\\\Users\\\\w10-21h2\\\\Documents\\\\GitHub\\\\Curso_Operador_PC_Nivel_I\" && npm install)",
       "Bash(cd \"C:\\\\Users\\\\w10-21h2\\\\Documents\\\\GitHub\\\\Curso_Operador_PC_Nivel_I\" && npm run dev)",
-      "Bash(gh auth:*)"
+      "Bash(gh auth:*)",
+      "Bash(where node:*)",
+      "Bash(cd \"/c/Users/w10-21h2/Documents/GitHub/Curso_Operador_PC_Nivel_I\" && npm run build 2>&1)",
+      "Bash(cd \"/c/Users/w10-21h2/Documents/GitHub/Curso_Operador_PC_Nivel_I\" && rm -rf CursoOperadorPC && mkdir -p CursoOperadorPC/node && cp -r dist CursoOperadorPC/ && cp -r PDFs CursoOperadorPC/ && cp server.js CursoOperadorPC/ && cp usb_iniciar.bat CursoOperadorPC/iniciar.bat && cp node_portable/node.exe CursoOperadorPC/node/node.exe && echo \"Carpeta armada OK\")",
+      "Bash(cd \"/c/Users/w10-21h2/Documents/GitHub/Curso_Operador_PC_Nivel_I\" && rm -f CursoOperadorPC.zip && powershell.exe -NoProfile -Command \"Compress-Archive -Path 'CursoOperadorPC\\\\*' -DestinationPath 'CursoOperadorPC.zip' -Force\" && echo \"ZIP creado OK\")"
     ]
   }
 }
