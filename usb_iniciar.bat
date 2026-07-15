@@ -30,5 +30,17 @@ exit /b 1
 
 :run
 echo  Iniciando Curso Operador de PC - Nivel I...
-start "" http://localhost:5173
-%NODE% server.js
+echo  Node: %NODE%
+echo  Directorio: %~dp0
+echo.
+echo  (Si algo falla, revisar error.log en esta carpeta)
+echo.
+%NODE% server.js > "%~dp0error.log" 2>&1
+if %errorlevel% neq 0 (
+    echo.
+    echo  ERROR: El servidor fallo. Revisa el archivo error.log
+    echo.
+    type "%~dp0error.log"
+    echo.
+    pause
+)

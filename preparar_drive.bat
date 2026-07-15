@@ -65,6 +65,7 @@ mkdir "CursoOperadorPC\node"
 robocopy "dist"          "CursoOperadorPC\dist"  /e /nfl /ndl /njh /njs >nul
 robocopy "PDFs"          "CursoOperadorPC\PDFs"  /e /nfl /ndl /njh /njs >nul
 copy "server.js"          "CursoOperadorPC\server.js"  >nul
+copy "package.json"       "CursoOperadorPC\package.json" >nul
 copy "usb_iniciar.bat"    "CursoOperadorPC\iniciar.bat" >nul
 copy "node_portable\node.exe" "CursoOperadorPC\node\node.exe" >nul
 
