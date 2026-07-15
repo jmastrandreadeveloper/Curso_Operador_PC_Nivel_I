@@ -133,3 +133,10 @@
 .nav-sub-list--nested .nav-tipo-btn.selected {
   padding-left: 49px;
 }
+
+/* Word Videos section */
+.nav-header--section {
+  padding: 0;
+  border-top: 2px solid #2d2d42;
+  margin-top: 4px;
+}

@@ -43,6 +43,18 @@ const server = createServer((req, res) => {
     result['Historia'] = existsSync(historiaDir)
       ? readdirSync(historiaDir).filter(f => f.endsWith('.pdf') || f.endsWith('.mp4'))
       : []
+    const wordVideosDir = path.join(PDFS_DIR, 'Word_Videos')
+    result['Word_Videos'] = existsSync(wordVideosDir)
+      ? readdirSync(wordVideosDir).filter(f => f.endsWith('.mp4')).sort()
+      : []
+    const excelVideosDir = path.join(PDFS_DIR, 'Excel_Videos')
+    result['Excel_Videos'] = existsSync(excelVideosDir)
+      ? readdirSync(excelVideosDir).filter(f => /^p\d+_/.test(f) && f.endsWith('.mp4')).sort()
+      : []
+    const excelDir = path.join(PDFS_DIR, 'Excel')
+    result['Excel'] = existsSync(excelDir)
+      ? readdirSync(excelDir).filter(f => f.endsWith('.pdf')).sort()
+      : []
     res.writeHead(200, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify(result))
     return

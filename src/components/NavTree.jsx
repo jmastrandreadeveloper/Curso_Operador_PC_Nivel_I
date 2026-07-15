@@ -7,9 +7,21 @@ function historiaLabel(filename) {
   return filename.replace(/^\d+-/, '').replace(/\.(pdf|mp4)$/, '').replace(/_/g, ' ')
 }
 
-export default function NavTree({ totalClasses, availablePdfs, historiaFiles, selected, onSelect }) {
+function wordVideoLabel(filename) {
+  return filename.replace(/^Clase \d+ - /, '').replace(/\.mp4$/, '').trim()
+}
+
+function excelVideoLabel(filename) {
+  return filename.replace(/^p\d+_/, '').replace(/\.mp4$/, '').replace(/_/g, ' ')
+}
+
+export default function NavTree({ totalClasses, availablePdfs, historiaFiles, wordVideos = [], excelVideos = [], excelPdfs = [], selected, onSelect }) {
   const [openClasses, setOpenClasses] = useState(new Set())
   const [openHistoria, setOpenHistoria] = useState(new Set())
+  const [openWordVideos, setOpenWordVideos] = useState(false)
+  const [openWordClasses, setOpenWordClasses] = useState(new Set())
+  const [openExcelVideos, setOpenExcelVideos] = useState(false)
+  const [openExcelClasses, setOpenExcelClasses] = useState(new Set())
 
   const historiaByClass = useMemo(() => {
     const map = {}
@@ -22,6 +34,32 @@ export default function NavTree({ totalClasses, availablePdfs, historiaFiles, se
     }
     return map
   }, [historiaFiles])
+
+  const wordVideosByClass = useMemo(() => {
+    const map = {}
+    for (const filename of wordVideos) {
+      const match = filename.match(/^Clase (\d+)/)
+      if (match) {
+        const num = parseInt(match[1], 10)
+        if (!map[num]) map[num] = []
+        map[num].push(filename)
+      }
+    }
+    return map
+  }, [wordVideos])
+
+  const excelVideosByClass = useMemo(() => {
+    const map = {}
+    for (const filename of excelVideos) {
+      const match = filename.match(/^p(\d+)_/)
+      if (match) {
+        const num = parseInt(match[1], 10)
+        if (!map[num]) map[num] = []
+        map[num].push(filename)
+      }
+    }
+    return map
+  }, [excelVideos])
 
   function toggleClass(num) {
     setOpenClasses(prev => {
@@ -41,6 +79,24 @@ export default function NavTree({ totalClasses, availablePdfs, historiaFiles, se
     })
   }
 
+  function toggleWordClass(num) {
+    setOpenWordClasses(prev => {
+      const next = new Set(prev)
+      if (next.has(num)) next.delete(num)
+      else next.add(num)
+      return next
+    })
+  }
+
+  function toggleExcelClass(num) {
+    setOpenExcelClasses(prev => {
+      const next = new Set(prev)
+      if (next.has(num)) next.delete(num)
+      else next.add(num)
+      return next
+    })
+  }
+
   function isAvailable(tipo, num) {
     return availablePdfs[tipo]?.includes(num)
   }
@@ -51,6 +107,18 @@ export default function NavTree({ totalClasses, availablePdfs, historiaFiles, se
 
   function isHistoriaSelected(filename) {
     return selected?.tipo === 'Historia' && selected?.filename === filename
+  }
+
+  function isWordVideoSelected(filename) {
+    return selected?.tipo === 'Word_Videos' && selected?.filename === filename
+  }
+
+  function isExcelVideoSelected(filename) {
+    return selected?.tipo === 'Excel_Videos' && selected?.filename === filename
+  }
+
+  function isExcelPdfSelected(filename) {
+    return selected?.tipo === 'Excel' && selected?.filename === filename
   }
 
   return (
@@ -134,6 +202,148 @@ export default function NavTree({ totalClasses, availablePdfs, historiaFiles, se
           )
         })}
       </ul>
+
+      {wordVideos.length > 0 && (
+        <>
+          <div className="nav-header nav-header--section">
+            <button
+              className="nav-class-btn has-content"
+              onClick={() => setOpenWordVideos(v => !v)}
+            >
+              <span className="nav-class-arrow">{openWordVideos ? '▾' : '▸'}</span>
+              <span className="nav-tipo-icon">🎬</span>
+              <span className="nav-class-label">Word Videos</span>
+              <span className="nav-dot" />
+            </button>
+          </div>
+          {openWordVideos && (
+            <ul className="nav-list">
+              {Object.keys(wordVideosByClass).sort((a, b) => a - b).map(numStr => {
+                const num = parseInt(numStr, 10)
+                const videos = wordVideosByClass[num]
+                const isOpen = openWordClasses.has(num)
+                return (
+                  <li key={num} className="nav-class-item">
+                    <button
+                      className="nav-class-btn has-content"
+                      onClick={() => toggleWordClass(num)}
+                    >
+                      <span className="nav-class-arrow">{isOpen ? '▾' : '▸'}</span>
+                      <span className="nav-class-label">
+                        Clase {String(num).padStart(2, '0')}
+                      </span>
+                      <span className="nav-dot" />
+                    </button>
+                    {isOpen && (
+                      <ul className="nav-sub-list">
+                        {videos.map(filename => {
+                          const sel = isWordVideoSelected(filename)
+                          return (
+                            <li key={filename}>
+                              <button
+                                className={`nav-tipo-btn ${sel ? 'selected' : ''}`}
+                                onClick={() => onSelect({ tipo: 'Word_Videos', filename })}
+                                title={wordVideoLabel(filename)}
+                              >
+                                <span className="nav-tipo-icon">▶</span>
+                                {wordVideoLabel(filename)}
+                              </button>
+                            </li>
+                          )
+                        })}
+                      </ul>
+                    )}
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+        </>
+      )}
+
+      {excelPdfs.length > 0 && (
+        <>
+          <div className="nav-header nav-header--section">
+            <span className="nav-tipo-icon">📗</span>
+            <span className="nav-class-label">Excel</span>
+          </div>
+          <ul className="nav-list">
+            {excelPdfs.map(filename => {
+              const sel = isExcelPdfSelected(filename)
+              return (
+                <li key={filename} className="nav-class-item">
+                  <button
+                    className={`nav-tipo-btn ${sel ? 'selected' : ''}`}
+                    onClick={() => onSelect({ tipo: 'Excel', filename })}
+                    title={filename.replace(/\.pdf$/, '')}
+                  >
+                    <span className="nav-tipo-icon">📄</span>
+                    {filename.replace(/\.pdf$/, '')}
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        </>
+      )}
+
+      {excelVideos.length > 0 && (
+        <>
+          <div className="nav-header nav-header--section">
+            <button
+              className="nav-class-btn has-content"
+              onClick={() => setOpenExcelVideos(v => !v)}
+            >
+              <span className="nav-class-arrow">{openExcelVideos ? '▾' : '▸'}</span>
+              <span className="nav-tipo-icon">🎬</span>
+              <span className="nav-class-label">Excel Videos</span>
+              <span className="nav-dot" />
+            </button>
+          </div>
+          {openExcelVideos && (
+            <ul className="nav-list">
+              {Object.keys(excelVideosByClass).sort((a, b) => a - b).map(numStr => {
+                const num = parseInt(numStr, 10)
+                const videos = excelVideosByClass[num]
+                const isOpen = openExcelClasses.has(num)
+                return (
+                  <li key={num} className="nav-class-item">
+                    <button
+                      className="nav-class-btn has-content"
+                      onClick={() => toggleExcelClass(num)}
+                    >
+                      <span className="nav-class-arrow">{isOpen ? '▾' : '▸'}</span>
+                      <span className="nav-class-label">
+                        Parte {String(num).padStart(2, '0')}
+                      </span>
+                      <span className="nav-dot" />
+                    </button>
+                    {isOpen && (
+                      <ul className="nav-sub-list">
+                        {videos.map(filename => {
+                          const sel = isExcelVideoSelected(filename)
+                          return (
+                            <li key={filename}>
+                              <button
+                                className={`nav-tipo-btn ${sel ? 'selected' : ''}`}
+                                onClick={() => onSelect({ tipo: 'Excel_Videos', filename })}
+                                title={excelVideoLabel(filename)}
+                              >
+                                <span className="nav-tipo-icon">▶</span>
+                                {excelVideoLabel(filename)}
+                              </button>
+                            </li>
+                          )
+                        })}
+                      </ul>
+                    )}
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+        </>
+      )}
     </nav>
   )
 }
